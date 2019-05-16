@@ -29,7 +29,7 @@
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </pickerView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" text="" textAlignment="center" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="none" minimumScaleFactor="0.59999999999999998" translatesAutoresizingMaskIntoConstraints="NO" id="Jg7-Dt-rnc">
-                                        <rect key="frame" x="8" y="263.5" width="359" height="63"/>
+                                        <rect key="frame" x="8" y="263.5" width="359" height="52.5"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="51"/>
                                         <color key="textColor" red="0.94509803921568625" green="0.65490196078431373" blue="0.20392156862745098" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -55,7 +55,7 @@
                                     <constraint firstItem="c1V-SU-qjY" firstAttribute="leading" secondItem="H4g-qN-MbT" secondAttribute="leading" id="Gjz-QA-PvA"/>
                                     <constraint firstItem="ZGz-pe-AwG" firstAttribute="height" secondItem="H4g-qN-MbT" secondAttribute="height" multiplier="0.5" id="Hqu-lW-phP"/>
                                     <constraint firstItem="c1V-SU-qjY" firstAttribute="height" secondItem="H4g-qN-MbT" secondAttribute="height" multiplier="0.32" id="Nib-q8-wtk"/>
-                                    <constraint firstItem="Jg7-Dt-rnc" firstAttribute="height" secondItem="txK-OS-RfU" secondAttribute="height" multiplier="0.3" id="TQI-Ag-HEr"/>
+                                    <constraint firstItem="Jg7-Dt-rnc" firstAttribute="height" secondItem="txK-OS-RfU" secondAttribute="height" multiplier="0.25" id="TQI-Ag-HEr"/>
                                     <constraint firstItem="Jg7-Dt-rnc" firstAttribute="top" secondItem="c1V-SU-qjY" secondAttribute="bottom" constant="30" id="cpq-zw-rnu"/>
                                     <constraint firstAttribute="trailing" secondItem="ZGz-pe-AwG" secondAttribute="trailing" id="han-oI-JPz"/>
                                     <constraint firstItem="Jg7-Dt-rnc" firstAttribute="leading" secondItem="H4g-qN-MbT" secondAttribute="leading" constant="8" id="mgD-eu-Zzd"/>
