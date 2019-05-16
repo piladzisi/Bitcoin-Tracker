@@ -7,14 +7,16 @@
 //
 
 import UIKit
-import Alamofire
-import SwiftyJSON
+//import Alamofire
+//import SwiftyJSON
 
 class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+    
     let baseURL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/BTC"
-    let currencyArray = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
+    let currencyArray = ["USD", "AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","ZAR"]
     var finalURL = ""
     var symbol = "$"
+    var bitcoin: Bitcoin!
     
     @IBOutlet weak var bitcoinPriceLabel: UILabel!
     @IBOutlet weak var currencyPicker: UIPickerView!
@@ -23,7 +25,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         super.viewDidLoad()
         currencyPicker.delegate = self
         currencyPicker.dataSource = self
-        getBitcoinData(url: baseURL+"USD")
+        initializePrice()
     }
    
     func numberOfComponents(in pickerView: UIPickerView) -> Int { //number of columns in picker
@@ -48,38 +50,53 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         return locale.displayName(forKey: .currencySymbol, value: code)
     }
 
-   
-    
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         finalURL = baseURL + currencyArray[row]
         symbol = getSymbol(forCurrencyCode: currencyArray[row])!
-        getBitcoinData(url: finalURL)
-   }
-   
-//    //MARK: - Networking
-
-    func getBitcoinData(url: String) {
-       Alamofire.request(url, method: .get)
-            .responseJSON { response in
-                if response.result.isSuccess {
-                    let bitcoinJSON : JSON = JSON(response.result.value!)
-                    self.updateBitcoinData(json: bitcoinJSON)
-                } else {
-                    print("Error: \(String(describing: response.result.error))")
-                    self.bitcoinPriceLabel.text = "Connection Issues"
-                }
+        getBitcoinData(url: finalURL) { (bitcoin) in
+            switch bitcoin {
+            case .success(let bitcoin):
+                self.setupView(bitcoin: bitcoin)
+                self.bitcoin = bitcoin
+            case .failure(let err):
+                print("Failed to fetch bitcoin:", err)
             }
+        }
     }
-
-//    //MARK: - JSON Parsing
+    
+    func initializePrice() {
+        getBitcoinData(url: baseURL+"USD") { (bitcoin) in
+            switch bitcoin {
+            case .success(let bitcoin):
+                print("initial")
+                self.bitcoinPriceLabel.text = "\(self.symbol) \(bitcoin.last)"
+            case .failure(let err):
+                print("Failed to fetch bitcoin:", err)
+            }
+        }
+    }
+//    //MARK: - Networking
+    
+    func getBitcoinData(url: String, completion: @escaping (Result<Bitcoin, Error>) -> ()) {
+        guard let url = URL(string: "\(finalURL)") else { return }
+        URLSession.shared.dataTask(with: url) { (data, resp, err) in
+            if let err = err {
+                completion(.failure(err))
+                return
+            }
+            do {
+                let bitcoin = try JSONDecoder().decode(Bitcoin.self, from: data!)
+                DispatchQueue.main.async {
+                    completion(.success(bitcoin))
+                 }
+            } catch let jsonError {
+                completion(.failure(jsonError))
+            }
+            }.resume()
+        }
    
-    func updateBitcoinData(json : JSON) {
-        if let bitcoinResult = json["last"].double {
-        bitcoinPriceLabel.text = "\(self.symbol) \(bitcoinResult)"
-        }
-        else {
-            bitcoinPriceLabel.text = "Price Unavailable"
-        }
+    func setupView(bitcoin: Bitcoin) {
+        bitcoinPriceLabel.text = "\(self.symbol) \(bitcoin.last)"
     }
 
 }
