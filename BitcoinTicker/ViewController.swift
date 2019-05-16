@@ -7,8 +7,10 @@
 //
 
 import UIKit
+import Alamofire
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+   
     
     let baseURL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/BTC"
     let currencyArray = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
@@ -22,22 +24,33 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+       currencyPicker.delegate = self
+        currencyPicker.dataSource = self
     }
-
+    
+    
     
     //TODO: Place your 3 UIPickerView delegate methods here
     
-    
-    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int { //number of columns in picker
+        return 1
+    }
 
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return currencyArray.count
+    }
     
-    
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        let attributedString = NSAttributedString(string: currencyArray[row], attributes: [NSAttributedString.Key.foregroundColor : UIColor.white])
+        return attributedString
+        
+        }
+    }
     
 //    
 //    //MARK: - Networking
 //    /***************************************************************/
-//    
+
 //    func getWeatherData(url: String, parameters: [String : String]) {
 //        
 //        Alamofire.request(url, method: .get, parameters: parameters)
@@ -81,5 +94,5 @@ class ViewController: UIViewController {
 
 
 
-}
+
 
