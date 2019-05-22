@@ -7,17 +7,10 @@
 //
 
 import UIKit
-//import Alamofire
-//import SwiftyJSON
 
 class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
-    
-    let baseURL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/BTC"
-    let currencyArray = ["USD", "AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","ZAR"]
-    var finalURL = ""
-    var symbol = "$"
     var bitcoin: Bitcoin!
-    
+    var symbol = "$"
     @IBOutlet weak var bitcoinPriceLabel: UILabel!
     @IBOutlet weak var currencyPicker: UIPickerView!
     
@@ -26,7 +19,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         currencyPicker.delegate = self
         currencyPicker.dataSource = self
         initializePrice()
-    }
+}
    
     func numberOfComponents(in pickerView: UIPickerView) -> Int { //number of columns in picker
         return 1
@@ -64,21 +57,11 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         }
     }
     
-    func initializePrice() {
-        getBitcoinData(url: baseURL+"USD") { (bitcoin) in
-            switch bitcoin {
-            case .success(let bitcoin):
-                print("initial")
-                self.bitcoinPriceLabel.text = "\(self.symbol) \(bitcoin.last)"
-            case .failure(let err):
-                print("Failed to fetch bitcoin:", err)
-            }
-        }
-    }
+    
 //    //MARK: - Networking
     
     func getBitcoinData(url: String, completion: @escaping (Result<Bitcoin, Error>) -> ()) {
-        guard let url = URL(string: "\(finalURL)") else { return }
+        guard let url = URL(string: "\(finalURL)") else { return print("return")}
         URLSession.shared.dataTask(with: url) { (data, resp, err) in
             if let err = err {
                 completion(.failure(err))
@@ -98,6 +81,23 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     func setupView(bitcoin: Bitcoin) {
         bitcoinPriceLabel.text = "\(self.symbol) \(bitcoin.last)"
     }
-
+    
+    func initializePrice() {
+        finalURL = baseURL+"USD"
+        getBitcoinData(url: finalURL ){ (bitcoin) in
+            switch bitcoin {
+            case .success(let bitcoin):
+                self.setupView(bitcoin: bitcoin)
+            case .failure(let err):
+                print("Failed to fetch bitcoin:", err)
+            }
+        }
+   
+    }
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        symbol = "$"
+        initializePrice()
+    }
+ 
 }
 
