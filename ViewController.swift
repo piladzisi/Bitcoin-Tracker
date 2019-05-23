@@ -46,15 +46,8 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         finalURL = baseURL + currencyArray[row]
         symbol = getSymbol(forCurrencyCode: currencyArray[row])!
-        getBitcoinData(url: finalURL) { (bitcoin) in
-            switch bitcoin {
-            case .success(let bitcoin):
-                self.setupView(bitcoin: bitcoin)
-                self.bitcoin = bitcoin
-            case .failure(let err):
-                print("Failed to fetch bitcoin:", err)
-            }
-        }
+        getBitcoinData(url: finalURL, completion: bitcoinCompletionHandler)
+        
     }
     
     
@@ -84,15 +77,16 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     
     func initializePrice() {
         finalURL = baseURL+"USD"
-        getBitcoinData(url: finalURL ){ (bitcoin) in
-            switch bitcoin {
-            case .success(let bitcoin):
-                self.setupView(bitcoin: bitcoin)
-            case .failure(let err):
-                print("Failed to fetch bitcoin:", err)
-            }
+        getBitcoinData(url: finalURL, completion: bitcoinCompletionHandler)
+    }
+    
+    func bitcoinCompletionHandler(result: Result<Bitcoin, Error>) {
+        switch result {
+        case .success(let result):
+            self.setupView(bitcoin: result)
+        case .failure(let err):
+            print("Failed to fetch bitcoin:", err)
         }
-   
     }
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         symbol = "$"
